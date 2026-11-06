@@ -1,0 +1,21 @@
+-- Total Security Events
+index=main sourcetype=csv source="security_logs.csv"
+| stats count AS total_events
+
+-- Failed Login Attempts
+index=main sourcetype=csv source="security_logs.csv" event_type="LOGIN_FAILED"
+| stats count AS failed_logins
+
+-- Top 10 Failed Login IPs
+index=main sourcetype=csv source="security_logs.csv" event_type="LOGIN_FAILED"
+| stats count AS failed_attempts BY source_ip
+| sort - failed_attempts
+| head 10
+
+-- Failed Logins Over Time
+index=main sourcetype=csv source="security_logs.csv" event_type="LOGIN_FAILED"
+| timechart span=1m count AS failed_logins
+
+-- Security Event Breakdown
+index=main sourcetype=csv source="security_logs.csv"
+| stats count BY event_type

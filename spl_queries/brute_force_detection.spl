@@ -1,0 +1,5 @@
+index=main sourcetype=csv source="security_logs.csv" event_type="LOGIN_FAILED"
+| bin _time span=1m
+| stats count AS failed_attempts by _time source_ip
+| where failed_attempts >= 5
+| sort - failed_attempts
